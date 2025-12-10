@@ -1,7 +1,6 @@
 import { Input } from "@/components/ui/input";
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -14,7 +13,7 @@ import { useRef } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-const Template = async () => {
+const Template = () => {
   const email = useRef(null);
   const appPass = useRef(null);
   const mailSubject = useRef(null);
@@ -30,15 +29,17 @@ const Template = async () => {
         },
         body: JSON.stringify(payload),
       });
-      // const responseData = await response.json().catch(() => null);
-      // if (!response.ok) {
-      //   const message = responseData?.message || "Request not sent";
-      //   throw new Error(message);
-      // }
-      // console.log("Response Data:", responseData);
+      const responseData = await response.json().catch((Error) => Error);
+      return responseData;
     },
-    onSuccess: toast("Template is Initiated and Test Mail Send is Done"),
-    onError: toast(Error),
+    onSuccess: (data) => {
+      toast(
+        "Template is Initiated and Test Mail Send is Done" + " " + data.sender,
+      );
+    },
+    onError: () => {
+      toast("Sorry for Intereption but Client can not connect with the Server");
+    },
   });
 
   const sender = async () => {
