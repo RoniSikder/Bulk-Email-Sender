@@ -10,37 +10,46 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useRef } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
+// import { useMutation } from "@tanstack/react-query";
+// import { toast } from "sonner";
+import { useNavigate } from "react-router";
 
 const Template = () => {
+  const navigate = useNavigate();
+
   const email = useRef(null);
   const appPass = useRef(null);
   const mailSubject = useRef(null);
   const mailBody = useRef(null);
 
-  const mutate = useMutation({
-    mutationFn: async (payload) => {
-      const url = "http://localhost:2000/service/user/admin/srequest";
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-      const responseData = await response.json().catch((Error) => Error);
-      return responseData;
-    },
-    onSuccess: (data) => {
-      toast(
-        "Template is Initiated and Test Mail Send is Done" + " " + data.sender,
-      );
-    },
-    onError: () => {
-      toast("Sorry for Intereption but Client can not connect with the Server");
-    },
-  });
+  // const mutate = useMutation({
+  //   mutationFn: async (payload) => {
+  //     const url = "http://localhost:2000/service/user/admin/srequest";
+  //     const response = await fetch(url, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(payload),
+  //     });
+  //     const responseData = await response.json().catch((Error) => Error);
+  //     return responseData;
+  //   },
+  //   onSuccess: (data) => {
+  //     toast(
+  //       "Template is Initiated and Test Mail Send is Done" + " " + data.sender,
+  //     );
+  //   },
+  //   onError: () => {
+  //     toast("Sorry for Intereption but Client can not connect with the Server");
+  //   },
+  // });
+
+  const counter = (sub, body) => {
+    const subjectCount = sub.match(/__#var#__/gi).length;
+    const bodyCount = body.match(/__#var#__/gi).length;
+    return { subjectCount: subjectCount, bodyCount: bodyCount };
+  };
 
   const sender = async () => {
     const user = email.current?.value ?? "";
@@ -50,13 +59,16 @@ const Template = () => {
     if (!user || !pass || !sub || !body) {
       throw new Error("All Fields are Require to SetUp the Template");
     }
-    const payload = {
+    const counterr = counter(sub, body);
+    let payload = {
       sender: user,
       appPassword: pass,
       subject: sub,
       mailBody: body,
+      subCount: counterr.subjectCount,
+      bodyCount: counterr.bodyCount,
     };
-    mutate.mutate(payload);
+    navigate("/upload", { state: payload });
   };
 
   return (

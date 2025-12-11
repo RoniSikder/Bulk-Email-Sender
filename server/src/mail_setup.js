@@ -4,17 +4,17 @@ const maildraft = require("./mail_drafter.js");
 
 const mailer = async (sender) => {
   const cred = mailer_credentials(sender.sender, sender.appPassword);
-  console.log(cred);
-  console.log(sender);
-  // const transporter = nodemailer.createTransport(cred);
-  // await transporter
-  //   .verify()
-  //   .then(() => {
-  //     console.log("Mailer setup complete");
-  //   })
-  //   .catch((error) => {
-  //     console.error("Mailer setup failed:", error);
-  //   });
+  // console.log(cred);
+  // console.log(sender);
+  const transporter = nodemailer.createTransport(cred);
+  await transporter
+    .verify()
+    .then(() => {
+      console.log("Mailer setup complete");
+    })
+    .catch((error) => {
+      console.error("Mailer setup failed:", error);
+    });
   // const promises = sender.map(async (email) => {
   //   const mailbody = maildraft(email);
   //   try {
