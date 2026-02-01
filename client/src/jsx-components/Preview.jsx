@@ -8,8 +8,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router";
 
 const Preview = () => {
+  const location = useLocation()
+  const full_Data = location.state
+  console.log(full_Data.clientData,full_Data.senderData)
   return (
     <div className="preview w-6/8">
       <Card className="mb-5">

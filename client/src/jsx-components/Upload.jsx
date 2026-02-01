@@ -37,13 +37,14 @@ const Upload = () => {
   const uploadData = useRef(null);
   const handlefileUpload = ()=>{
     const reader = new FileReader();
-    console.log(uploadData.current.files[0]);
     reader.onload = (e) => {
-      const data = new Uint8Array(e.target.result);
-      const workbook = XLSX.read(data, { type: "array" });
+      const data1 = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data1, { type: "array" });
       const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets.Sheet1);
-      console.log(jsonData[0]);
-      Navigate("/preview", { state: jsonData });
+      Navigate("/preview", { state: {
+        clientData:jsonData,
+        senderData:data
+      } });
     };
     reader.readAsArrayBuffer(uploadData.current.files[0]);
   }
